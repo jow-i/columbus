@@ -64,6 +64,8 @@ Visualization Manager:
           Value: true
         left_wheel:
           Value: true
+        odom:
+          Value: true
         right_wheel:
           Value: true
       Marker Scale: 1
@@ -80,6 +82,8 @@ Visualization Manager:
             {}
           right_wheel:
             {}
+        odom:
+          {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -178,7 +182,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 1.4138504266738892
+      Distance: 4.89279842376709
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -193,10 +197,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.42020487785339355
+      Pitch: 0.8402044773101807
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 1.0952184200286865
+      Yaw: 1.340218186378479
     Saved: ~
 Window Geometry:
   Displays:
