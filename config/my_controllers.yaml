@@ -4,7 +4,7 @@ controller_manager:
     use_sim_time: true
 
     mecanum_cont:
-      type: mecanum_controller/MecanumDriveController
+      type: mecanum_drive_controller/MecanumDriveController
 
     joint_broad:
       type: joint_state_broadcaster/JointStateBroadcaster
