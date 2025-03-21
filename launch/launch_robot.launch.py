@@ -8,7 +8,7 @@ from launch.actions import IncludeLaunchDescription, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import Command
 from launch.actions import RegisterEventHandler
-from launch.event_handlers import OnProcessStart
+from launch.event_handlers import OnProcessStart, OnProcessExit
 
 from launch_ros.actions import Node
 
@@ -25,7 +25,7 @@ def generate_launch_description():
     rsp = IncludeLaunchDescription(
                 PythonLaunchDescriptionSource([os.path.join(
                     get_package_share_directory(package_name),'launch','rsp.launch.py'
-                )]), launch_arguments={'use_sim_time': 'false', 'use_ros2_controle':'true'}.items()
+                )]), launch_arguments={'use_sim_time': 'false', 'use_ros2_control':'true'}.items()
     )
 
     # joystick = IncludeLaunchDescription(
@@ -40,7 +40,11 @@ def generate_launch_description():
     controller_manager = Node(
         package="controller_manager",
         executable="ros2_control_node",
-        parameters=[controller_params_file]
+        parameters=[controller_params_file],
+        output="both",
+        remappings=[
+            ("~/robot_description", "/robot_description"),
+        ],
     )
 
     delayed_controller_manager = TimerAction(period=3.0, actions=[controller_manager])
@@ -48,10 +52,9 @@ def generate_launch_description():
     mecanum_drive_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["mecanum_cont"],
-    )
+        arguments=["mecanum_cont", "--controller-manager", "/controller_manager"],    )
 
-    delayed_diff_drive_spawner = RegisterEventHandler(
+    delayed_mecanum_drive_spawner = RegisterEventHandler(
         event_handler=OnProcessStart(
             target_action=controller_manager,
             on_start=[mecanum_drive_spawner],
@@ -61,19 +64,19 @@ def generate_launch_description():
     joint_broad_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["joint_broad"],
+        arguments=["joint_broad", "--controller-manager", "/controller_manager"],
     )
 
-    delayed_joint_broad_spawner = RegisterEventHandler(
-        event_handler=OnProcessStart(
-            target_action=controller_manager,
-            on_start=[joint_broad_spawner],
+    delay_joint_state_broadcaster_after_robot_controller_spawner = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=mecanum_drive_spawner,
+            on_exit=[joint_broad_spawner],
         )
     )
     # Launch them all!
     return LaunchDescription([
         rsp,
         delayed_controller_manager,
-        delayed_diff_drive_spawner,
-        delayed_joint_broad_spawner
+        delayed_mecanum_drive_spawner,
+        delay_joint_state_broadcaster_after_robot_controller_spawner
 ])
