@@ -22,7 +22,15 @@ def generate_launch_description():
             name='teleop_node',
             parameters=[joy_params],
     )
+    
+    converter_node = Node(
+            package='twist_converter',
+            executable='twist_converter',
+            name='converter'
+    )
+    
     return LaunchDescription([
         joy_node, 
-        teleop_node
+        teleop_node,
+        converter_node
     ])
