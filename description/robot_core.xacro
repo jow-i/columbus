@@ -24,10 +24,8 @@
     </material>
     <!-- BASE LINK-->
 
-    <link name="base_link">
-
-    </link>
-
+    <link name="base_link"/>
+    
     <joint name="chassis_joint" type="fixed">
         <parent link="base_link"/>
         <child link="chassis"/>

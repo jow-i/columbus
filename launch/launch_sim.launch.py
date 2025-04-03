@@ -41,11 +41,10 @@ def generate_launch_description():
                         output='screen')
 
 
-
     mecanum_drive_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["mecanum_cont"],
+        arguments=["mecanum_cont"]
     )
 
     joint_broad_spawner = Node(

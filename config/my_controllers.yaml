@@ -1,7 +1,8 @@
 controller_manager:
   ros__parameters:
     update_rate: 30
-    # use_sim_time: true
+    use_sim_time: true
+    publish_tf: true
 
     mecanum_cont:
       type: mecanum_drive_controller/MecanumDriveController
@@ -33,4 +34,4 @@ mecanum_cont:
 
 
 # joint_broad:
-#   ros__parameters:
+#  ros__parameters:
