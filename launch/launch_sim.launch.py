@@ -44,7 +44,7 @@ def generate_launch_description():
     mecanum_drive_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["mecanum_cont"]
+        arguments=["mecanum_cont"],
     )
 
     joint_broad_spawner = Node(
@@ -53,11 +53,41 @@ def generate_launch_description():
         arguments=["joint_broad"],
     )
 
-    # Launch them all!
+
+    odom_tf_relay_node = Node(
+        package='topic_tools',
+        executable='relay',
+        name='odom_tf_relay',
+        output='screen',
+        parameters=[{
+            'input_topic': '/mecanum_cont/tf_odometry', # Source topic
+            'output_topic': '/tf'                            # Destination topic
+        }],
+        # You might need to explicitly set the message type if relay struggles to auto-detect
+        # arguments=['--ros-args', '-p', 'topic_type:=tf2_msgs/msg/TFMessage']
+    )
+   
+    
+
+    odom_msg_relay_node = Node(
+        package='topic_tools',
+        executable='relay',
+        name='odom_msg_relay',
+        output='screen',
+        parameters=[{
+            'input_topic': '/mecanum_cont/odometry', # Source Odometry topic
+            'output_topic': '/odom'                        # Destination standard topic
+        }],
+        # Message type is usually auto-detected, but can be specified if needed:
+        # arguments=['--ros-args', '-p', 'topic_type:=nav_msgs/msg/Odometry']
+    )
+
     return LaunchDescription([
         rsp,
         gazebo,
         spawn_entity,
         mecanum_drive_spawner,
         joint_broad_spawner,
+        odom_tf_relay_node,
+        odom_msg_relay_node
     ])

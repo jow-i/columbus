@@ -52,7 +52,8 @@ def generate_launch_description():
     mecanum_drive_spawner = Node(
         package="controller_manager",
         executable="spawner",
-        arguments=["mecanum_cont", "--controller-manager", "/controller_manager"],    )
+        arguments=["mecanum_cont", "--controller-manager", "/controller_manager"],
+    )
 
     delayed_mecanum_drive_spawner = RegisterEventHandler(
         event_handler=OnProcessStart(
@@ -73,10 +74,41 @@ def generate_launch_description():
             on_exit=[joint_broad_spawner],
         )
     )
+    
+    odom_tf_relay_node = Node(
+        package='topic_tools',
+        executable='relay',
+        name='odom_tf_relay',
+        output='screen',
+        parameters=[{
+            'input_topic': '/mecanum_cont/tf_odometry', # Source topic
+            'output_topic': '/tf'                            # Destination topic
+        }],
+        # You might need to explicitly set the message type if relay struggles to auto-detect
+        # arguments=['--ros-args', '-p', 'topic_type:=tf2_msgs/msg/TFMessage']
+    )
+   
+    
+
+    odom_msg_relay_node = Node(
+        package='topic_tools',
+        executable='relay',
+        name='odom_msg_relay',
+        output='screen',
+        parameters=[{
+            'input_topic': '/mecanum_cont/odometry', # Source Odometry topic
+            'output_topic': '/odom'                        # Destination standard topic
+        }],
+        # Message type is usually auto-detected, but can be specified if needed:
+        # arguments=['--ros-args', '-p', 'topic_type:=nav_msgs/msg/Odometry']
+    )
+    
     # Launch them all!
     return LaunchDescription([
         rsp,
         delayed_controller_manager,
         delayed_mecanum_drive_spawner,
-        delay_joint_state_broadcaster_after_robot_controller_spawner
+        delay_joint_state_broadcaster_after_robot_controller_spawner,
+        odom_tf_relay_node,
+        odom_msg_relay_node
 ])
