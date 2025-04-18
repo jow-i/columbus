@@ -1,7 +1,7 @@
 controller_manager:
   ros__parameters:
     update_rate: 30
-    use_sim_time: true
+    use_sim_time: false
     publish_tf: true
 
     mecanum_cont:
@@ -31,9 +31,8 @@ mecanum_cont:
     odom_frame_id: "odom"
     enable_odom_tf: true
 
-    odom_topic: "/odom"
-    # twist_covariance_diagonal: [0.0, 7.0, 14.0, 21.0, 28.0, 35.0]
-    # pose_covariance_diagonal: [0.0, 7.0, 14.0, 21.0, 28.0, 35.0]
+    twist_covariance_diagonal: [0.0, 7.0, 14.0, 21.0, 28.0, 35.0]
+    ose_covariance_diagonal: [0.0, 7.0, 14.0, 21.0, 28.0, 35.0]
 
 
 
